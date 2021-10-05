@@ -6,23 +6,50 @@
 trigger:
 - master
 
-pool:
-  vmImage: ubuntu-latest
+pr: none
 
-steps:
-- task: NodeTool@0
-  inputs:
-    versionSpec: '14.x'
-  displayName: 'Install Node.js'
+variables:
+ vmImageName: 'ubuntu-latest'
 
-- script: |
-    npm install
-    npm install @babel/helper-compilation-targets --save-dev
-    npm run build
-  displayName: 'npm install and build'
+stages:
+  - stage: Build
+    displayName: Build Stage
+    jobs:
+      - job: BuildSite
+        displayName: 'Build Site'
+        pool: $(vmImageName)
+        steps:
+        - task: NodeTool@0
+          inputs:
+            versionSpec: '14.x'
+          displayName: 'Install NodeJS'
 
-- task: PublishBuildArtifacts@1
-  inputs:
-    PathtoPublish: 'dist'
-    ArtifactName: 'drop'
-    publishLocation: 'Container'
+        - script: |
+            npm install
+            npm install @babel/helper-compilation-targets --save-dev
+            npm run build --if-present
+          displayName: 'npm install and build'
+
+        - task: CopyFiles@2
+          inputs:
+            SourceFolder: '$(System.DefaultWorkingDirectory)/dist/'
+            Contents: '$(System.DefaultWorkingDirectory)/dist/**/*'
+            TargetFolder: '$(Build.ArtifactStagingDirectory)/output-site'
+          displayName: 'Copy site files to artifact directory'
+        
+        - task: ArchiveFiles@2
+          displayName: 'Archive files'
+          inputs:
+            rootFolderOrFile: '$(Build.ArtifactStagingDirectory)/output-site'
+            includeRootFolder: false
+            archiveType: zip
+            archiveFile: $(Build.ArtifactStagingDirectory)/$(Build.BuildId)-Site.zip
+            replaceExistingArchive: true
+
+        - task: PublishPipelineArtifact@1
+          inputs:
+            targetPath: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-site.zip'
+            artifact: '$(Build.BuildId)-Site.zip'
+        
+        
+
