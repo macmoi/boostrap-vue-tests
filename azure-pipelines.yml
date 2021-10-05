@@ -17,7 +17,9 @@ stages:
     jobs:
       - job: BuildSite
         displayName: 'Build Site'
-        pool: $(vmImageName)
+        pool:
+          vmImage: $(vmImageName)
+        
         steps:
         - task: NodeTool@0
           inputs:
