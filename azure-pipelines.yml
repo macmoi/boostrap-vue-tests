@@ -68,11 +68,17 @@ stages:
             deploy:
               steps:
                 - download: none
-                - task: DownloadPipelineArtifact@2
-                  displayName: 'Downloading pipeline artifacts'
+                - task: DownloadBuildArtifacts@1
                   inputs:
                     buildType: 'current'
-                    artifactName: "$(Build.BuildId)-Site"
+                    downloadType: 'single'
+                    artifactName: '$(Build.BuildId)-Site.zip'
+                    downloadPath: '$(System.DefaultWorkingDirectory)'
+                # - task: DownloadPipelineArtifact@2
+                #   displayName: 'Downloading pipeline artifacts'
+                #   inputs:
+                #     buildType: 'current'
+                #     artifactName: "$(Build.BuildId)-Site"
                 - task: ExtractFiles@1
                   inputs:
                     archiveFilePatterns: '*.zip'
