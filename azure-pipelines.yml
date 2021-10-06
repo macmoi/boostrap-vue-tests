@@ -74,7 +74,7 @@ stages:
                 #     artifactName: "$(Build.BuildId)-Site"
                 - task: ExtractFiles@1
                   inputs:
-                    archiveFilePatterns: '**/*.zip'
+                    archiveFilePatterns: '*.zip'
                     destinationFolder: '$(System.DefaultWorkingDirectory)/unzip/$(Build.BuildId)-Site'
                     cleanDestinationFolder: true
                     overwriteExistingFiles: false
