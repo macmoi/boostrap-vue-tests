@@ -18,6 +18,6 @@ jobs:
           password: ${{ secrets.ACR_PASSWORD }}
 
       - run: |
-          docker build -t vuesampleapp
+          docker build -t vuesampleapp .
           docker tag vuesampleapp desatests.azurecr.io/vue/vuesampleapp:v1
           docker push desatests.azurecr.io/vue/vuesampleapp:v1
