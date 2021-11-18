@@ -73,3 +73,39 @@ npm run lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+
+<br>
+
+# Docker Setup
+
+Build the docker image
+
+```bash
+docker build -t vuesampleapp .
+```
+
+Check local installed images
+
+```bash
+docker images
+```
+
+Run the docker container
+```bash
+docker run -d -p 8080:80 --rm --name vuejs-containerized-app vuesampleapp
+```
+
+Check if the container is running
+```bash
+docker ps
+```
+
+Go to localhost:8080 to open the web application
+```
+http://localhost:8080
+```
+
+To stop the service get the Container ID and execute the following command
+```
+docker stop <<container_id>>
+```
