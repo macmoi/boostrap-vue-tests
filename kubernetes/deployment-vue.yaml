@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vuesampleapp
+spec:
+  selector:
+    matchLabels:
+      app: vuesampleapp
+  replicas: 4
+  template:
+    metadata:
+      labels:
+        app: vuesampleapp
+    spec:
+      containers:
+      - name: vuesampleapp
+        image: desatests.azurecr.io/vue/vuesampleapp:v1
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "400m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vuesampleapp-ip
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+  selector:
+    app: vuesampleapp
+---
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
+# metadata:
+#   name: vuesampleapp-ingress
+#   annotations:
+#     kubernetes.io/ingress.class: addon-http-application-routing
+# spec:
+#   rules:
+#   - host: vuesampleapp.18052c90ecf6490eab9d.eastus.aksapp.io
+#     http:
+#       paths:
+#       - path: /
+#         pathType: Prefix
+#         backend:
+#           service: 
+#             name: vuesampleapp-ip
+#             port:
+#               number: 80
+
