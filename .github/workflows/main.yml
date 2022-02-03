@@ -10,14 +10,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      
-      - uses: azure/docker-login@v1
-        with:
-          login-server: desatests.azurecr.io
-          username: ${{ secrets.ACR_USERNAME }}
-          password: ${{ secrets.ACR_PASSWORD }}
 
-      - run: |
-          docker build -t vuesampleapp .
-          docker tag vuesampleapp desatests.azurecr.io/vue/vuesampleapp:v1
-          docker push desatests.azurecr.io/vue/vuesampleapp:v1
+      - name: docker login
+        env:
+          DOCKER_USER: ${{secrets.DOCKER_USER}}
+          DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
+        run: |
+          docker login -u $DOCKER_USER -p $DOCKER_PASSWORD 
+
+      - name: Build Docker image
+        run: |
+          docker build -t vuesampleapp . 
+          docker tag vuesampleapp macmoi/testing-app:$(date +%s)
+          
+      - name: Push to Docker Hub
+        run: |
+          docker push macmoi/testing-app:$(date +%s)
+
+
